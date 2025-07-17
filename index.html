@@ -1,1 +1,227 @@
-test
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Compas de Vie</title>
+    
+    <!-- Intégration d'une police de caractères pour un meilleur design -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- STYLE (CSS) -->
+    <style>
+        :root {
+            --color-positive: #2ecc71;
+            --color-negative: #e74c3c;
+            --color-neutral: #95a5a6;
+            --color-bg: #f4f7f6;
+            --color-card: #ffffff;
+            --color-text: #34495e;
+            --color-shadow: rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        main {
+            width: 100%;
+            max-width: 700px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--color-text);
+        }
+
+        p {
+            text-align: center;
+            color: var(--color-neutral);
+            margin-bottom: 40px;
+        }
+
+        .activity-card {
+            background-color: var(--color-card);
+            border-radius: 8px;
+            box-shadow: 0 4px 10px var(--color-shadow);
+            margin-bottom: 15px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--color-neutral);
+            transition: all 0.3s ease;
+        }
+        
+        /* Styles conditionnels pour la bordure de couleur */
+        .activity-card.positive {
+            border-left-color: var(--color-positive);
+        }
+        .activity-card.negative {
+            border-left-color: var(--color-negative);
+        }
+
+        .activity-name {
+            font-size: 1.1em;
+            flex-grow: 1;
+        }
+
+        .activity-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .rating-value {
+            font-size: 1.5em;
+            font-weight: 600;
+            width: 3ch; /* Largeur fixe pour éviter les sauts de mise en page */
+            text-align: center;
+        }
+        
+        /* Styles conditionnels pour la couleur de la note */
+        .rating-value.positive {
+            color: var(--color-positive);
+        }
+        .rating-value.negative {
+            color: var(--color-negative);
+        }
+
+        .btn {
+            background-color: #ecf0f1;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.5em;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+        .btn:hover {
+            background-color: #bdc3c7;
+        }
+        .btn:active {
+            transform: scale(0.9);
+        }
+        .btn-plus { color: var(--color-positive); }
+        .btn-minus { color: var(--color-negative); }
+    </style>
+</head>
+
+<body>
+
+    <main>
+        <h1>🧭 Mon Compas de Vie</h1>
+        <p>Notez chaque activité de -5 (je n'aime pas) à +5 (j'adore) pour découvrir ce qui vous anime.</p>
+        
+        <!-- Ce conteneur sera rempli dynamiquement par le JavaScript -->
+        <div id="activities-list"></div>
+    </main>
+
+    <!-- LOGIQUE (JAVASCRIPT) -->
+    <script>
+        // Clé utilisée pour sauvegarder les données dans le navigateur
+        const STORAGE_KEY = 'lifeCompassActivities';
+
+        // 1. DÉFINITION DES DONNÉES DE DÉPART
+        // Ces données ne sont utilisées que si l'utilisateur n'a encore rien sauvegardé.
+        const initialActivities = [
+            { id: 1, name: "Faire une randonnée en nature", rating: 0 },
+            { id: 2, name: "Apprendre un langage de programmation", rating: 0 },
+            { id: 3, name: "Cuisiner un plat complexe", rating: 0 },
+            { id: 4, name: "Animer une réunion d'équipe", rating: 0 },
+            { id: 5, name: "Lire un livre de non-fiction", rating: 0 },
+            { id: 6, name: "Organiser un événement pour des amis", rating: 0 },
+            { id: 7, name: "Passer du temps seul et réfléchir", rating: 0 },
+            { id: 8, name: "Faire du bénévolat", rating: 0 },
+            { id: 9, name: "Pratiquer un instrument de musique", rating: 0 },
+            { id: 10, name: "Débattre d'un sujet de société", rating: 0 },
+        ];
+
+        // 2. CHARGEMENT DES DONNÉES
+        // On essaie de récupérer les données sauvegardées. Si elles n'existent pas, on utilise les données initiales.
+        let activities = JSON.parse(localStorage.getItem(STORAGE_KEY)) || initialActivities;
+
+        // 3. FONCTION POUR SAUVEGARDER LES DONNÉES
+        function saveActivities() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(activities));
+        }
+
+        // 4. FONCTION POUR AFFICHER/RAFRAÎCHIR LA LISTE
+        function renderActivities() {
+            const listContainer = document.getElementById('activities-list');
+            listContainer.innerHTML = ''; // On vide la liste pour la reconstruire
+
+            // On trie les activités par note, de la plus haute à la plus basse
+            activities.sort((a, b) => b.rating - a.rating);
+
+            activities.forEach(activity => {
+                // Création de la "carte" pour chaque activité
+                const card = document.createElement('div');
+                card.className = 'activity-card';
+                card.dataset.id = activity.id; // On stocke l'ID dans un attribut data-*
+
+                // Ajout des classes de couleur en fonction de la note
+                let ratingClass = '';
+                if (activity.rating > 0) {
+                    card.classList.add('positive');
+                    ratingClass = 'positive';
+                } else if (activity.rating < 0) {
+                    card.classList.add('negative');
+                    ratingClass = 'negative';
+                }
+
+                // Construction du HTML intérieur de la carte
+                card.innerHTML = `
+                    <span class="activity-name">${activity.name}</span>
+                    <div class="activity-controls">
+                        <button class="btn btn-minus" aria-label="Diminuer la note">-</button>
+                        <span class="rating-value ${ratingClass}">${activity.rating > 0 ? '+' : ''}${activity.rating}</span>
+                        <button class="btn btn-plus" aria-label="Augmenter la note">+</button>
+                    </div>
+                `;
+
+                listContainer.appendChild(card);
+            });
+        }
+        
+        // 5. GESTION DES CLICS (AUGMENTER/DIMINUER LA NOTE)
+        document.getElementById('activities-list').addEventListener('click', (event) => {
+            const target = event.target;
+            
+            // On cherche la carte parente de l'élément cliqué
+            const card = target.closest('.activity-card');
+            if (!card) return; // Si on a cliqué ailleurs, on ne fait rien
+            
+            // On récupère l'ID de l'activité et on la retrouve dans notre tableau
+            const activityId = parseInt(card.dataset.id);
+            const activity = activities.find(a => a.id === activityId);
+
+            if (target.matches('.btn-plus') && activity.rating < 5) {
+                activity.rating++;
+            } else if (target.matches('.btn-minus') && activity.rating > -5) {
+                activity.rating--;
+            }
+
+            saveActivities(); // On sauvegarde les changements
+            renderActivities(); // On rafraîchit l'affichage
+        });
+
+        // 6. AFFICHAGE INITIAL AU CHARGEMENT DE LA PAGE
+        renderActivities();
+    </script>
+
+</body>
+</html>

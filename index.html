@@ -26,7 +26,7 @@
         main { width: 100%; max-width: 700px; margin: 0 auto; }
         h1 { text-align: center; color: var(--color-text); }
         .intro-text { text-align: center; color: var(--color-neutral); }
-        .main-controls { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; }
+        .main-controls { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap;}
         .action-button { color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 1em; font-weight: 600; cursor: pointer; transition: background-color 0.2s ease, transform 0.1s ease; }
         .action-button:active { transform: scale(0.95); }
         #sort-button { background-color: var(--color-primary); }
@@ -55,9 +55,29 @@
         .close-button:hover { color: var(--color-text); }
         #prompt-output { width: 100%; height: 300px; margin: 15px 0; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-family: monospace; font-size: 0.9em; background-color: #fff; }
         .modal-actions { text-align: right; }
+
+        /* **NOUVEAUTÉ : Design adaptatif (responsive) pour les smartphones** */
+        @media (max-width: 600px) {
+            .activity-card {
+                display: block; /* Les éléments s'empilent au lieu d'être côte à côte */
+                padding-bottom: 10px;
+            }
+            .activity-name {
+                white-space: normal; /* Permet au texte de revenir à la ligne */
+                overflow: visible;
+                text-overflow: clip;
+                padding-right: 0;
+                margin-bottom: 15px; /* Espace entre le texte et les boutons */
+                font-size: 1em; /* On peut légèrement réduire la police si besoin */
+            }
+            .activity-controls {
+                justify-content: center; /* Centre les boutons */
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Le reste du HTML (body) est identique et n'a pas besoin d'être changé -->
     <main>
         <h1>🧭 Mon Compas de Vie</h1>
         <p class="intro-text">Notez chaque activité de -5 à +5 pour découvrir ce qui vous anime.</p>
@@ -81,11 +101,10 @@
         </div>
     </div>
 
-    <!-- LOGIQUE (JAVASCRIPT) -->
+    <!-- Le JavaScript est identique et n'a pas besoin d'être changé -->
     <script>
         const STORAGE_KEY = 'lifeCompassActivities';
 
-        // **NOUVEAUTÉ** : La liste initiale contient maintenant 100 propositions
         const initialActivities = [
             // Créativité & Expression
             { id: 1, name: "Écrire une histoire courte ou un poème", rating: 0 },
@@ -195,21 +214,13 @@
             { id: 99, name: "Goûter un vin ou un café en analysant les arômes", rating: 0 },
             { id: 100, name: "Se lever tôt pour voir le lever du soleil", rating: 0 },
         ];
-
         let activities = JSON.parse(localStorage.getItem(STORAGE_KEY)) || initialActivities;
-        
-        // --- Le reste du script est identique ---
-
         const exportModal = document.getElementById('export-modal');
         const exportButton = document.getElementById('export-button');
         const closeModalButton = document.getElementById('close-modal-button');
         const copyButton = document.getElementById('copy-button');
         const promptOutput = document.getElementById('prompt-output');
-
-        function saveActivities() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(activities));
-        }
-
+        function saveActivities() { localStorage.setItem(STORAGE_KEY, JSON.stringify(activities)); }
         function renderActivities() {
             const listContainer = document.getElementById('activities-list');
             listContainer.innerHTML = '';
@@ -217,115 +228,47 @@
                 const card = document.createElement('div');
                 card.className = 'activity-card';
                 card.dataset.id = activity.id;
-                card.innerHTML = `
-                    <span class="activity-name" title="${activity.name}">${activity.name}</span>
-                    <div class="activity-controls">
-                        <button class="btn btn-minus" aria-label="Diminuer la note">-</button>
-                        <span class="rating-value"></span>
-                        <button class="btn btn-plus" aria-label="Augmenter la note">+</button>
-                    </div>`;
+                card.innerHTML = `<span class="activity-name" title="${activity.name}">${activity.name}</span><div class="activity-controls"><button class="btn btn-minus" aria-label="Diminuer la note">-</button><span class="rating-value"></span><button class="btn btn-plus" aria-label="Augmenter la note">+</button></div>`;
                 listContainer.appendChild(card);
                 updateCard(card, activity);
             });
         }
-        
         function updateCard(cardElement, activity) {
-             const ratingValue = cardElement.querySelector('.rating-value');
-             ratingValue.textContent = activity.rating > 0 ? `+${activity.rating}` : activity.rating;
-             
-             ratingValue.className = 'rating-value';
-             cardElement.classList.remove('positive', 'negative');
-
-             if (activity.rating > 0) {
-                 cardElement.classList.add('positive');
-                 ratingValue.classList.add('positive');
-             } else if (activity.rating < 0) {
-                 cardElement.classList.add('negative');
-                 ratingValue.classList.add('negative');
-             }
+            const ratingValue = cardElement.querySelector('.rating-value');
+            ratingValue.textContent = activity.rating > 0 ? `+${activity.rating}` : activity.rating;
+            ratingValue.className = 'rating-value';
+            cardElement.classList.remove('positive', 'negative');
+            if (activity.rating > 0) {
+                cardElement.classList.add('positive');
+                ratingValue.classList.add('positive');
+            } else if (activity.rating < 0) {
+                cardElement.classList.add('negative');
+                ratingValue.classList.add('negative');
+            }
         }
-
         function generateAIPrompt() {
             const positive = activities.filter(a => a.rating > 0).sort((a,b) => b.rating - a.rating);
             const negative = activities.filter(a => a.rating < 0).sort((a,b) => a.rating - b.rating);
             const neutral = activities.filter(a => a.rating === 0);
-
             let prompt = `Bonjour, je cherche à mieux me connaître pour trouver ma mission de vie. Tu es un coach expert en orientation et en développement personnel. Analyse en profondeur les données suivantes que j'ai collectées sur mes préférences.\n\n`;
-
             prompt += `--- MES SOURCES D'ÉNERGIE (notes positives) ---\n`;
-            if (positive.length > 0) {
-                prompt += positive.map(a => `- ${a.name} (Note : +${a.rating})`).join('\n');
-            } else {
-                prompt += `(Aucune pour l'instant)`;
-            }
-
+            if (positive.length > 0) { prompt += positive.map(a => `- ${a.name} (Note : +${a.rating})`).join('\n'); } else { prompt += `(Aucune pour l'instant)`; }
             prompt += `\n\n--- MES PERTES D'ÉNERGIE (notes négatives) ---\n`;
-            if (negative.length > 0) {
-                prompt += negative.map(a => `- ${a.name} (Note : ${a.rating})`).join('\n');
-            } else {
-                prompt += `(Aucune pour l'instant)`;
-            }
-            
+            if (negative.length > 0) { prompt += negative.map(a => `- ${a.name} (Note : ${a.rating})`).join('\n'); } else { prompt += `(Aucune pour l'instant)`; }
             prompt += `\n\n--- ACTIVITÉS NEUTRES OU NON TESTÉES ---\n`;
-             if (neutral.length > 0) {
-                prompt += neutral.map(a => `- ${a.name}`).join('\n');
-            } else {
-                prompt += `(Aucune pour l'instant)`;
-            }
-
+            if (neutral.length > 0) { prompt += neutral.map(a => `- ${a.name}`).join('\n'); } else { prompt += `(Aucune pour l'instant)`; }
             prompt += `\n\n--- TA MISSION ---\n`;
             prompt += `1. **Analyse des Thèmes :** Identifie les grands thèmes récurrents dans ce que j'aime (créativité, aide aux autres, organisation, technologie, nature, etc.) et dans ce que je n'aime pas.\n`;
             prompt += `2. **Compétences et Valeurs :** Déduis les compétences (ex: communication, analyse, leadership) et les valeurs fondamentales (ex: liberté, sécurité, impact social) que ces préférences révèlent.\n`;
             prompt += `3. **Pistes de Mission de Vie :** Sur la base de ton analyse, propose 3 à 5 pistes concrètes de "missions de vie" ou de domaines professionnels/personnels qui pourraient me correspondre. Pour chaque piste, explique pourquoi elle est pertinente.\n`;
             prompt += `4. **Question d'Approfondissement :** Termine en me posant une question puissante et inattendue pour m'aider à pousser ma réflexion encore plus loin.`;
-            
             return prompt;
         }
-
         document.getElementById('activities-list').addEventListener('click', (event) => {
             const card = event.target.closest('.activity-card');
             if (!card) return;
             const activityId = parseInt(card.dataset.id);
             const activity = activities.find(a => a.id === activityId);
             let hasChanged = false;
-
             if (event.target.matches('.btn-plus') && activity.rating < 5) { activity.rating++; hasChanged = true; }
-            else if (event.target.matches('.btn-minus') && activity.rating > -5) { activity.rating--; hasChanged = true; }
-            
-            if(hasChanged) {
-                saveActivities();
-                updateCard(card, activity);
-            }
-        });
-
-        document.getElementById('sort-button').addEventListener('click', () => {
-            activities.sort((a, b) => b.rating - a.rating);
-            renderActivities();
-        });
-
-        exportButton.addEventListener('click', () => {
-            promptOutput.value = generateAIPrompt();
-            exportModal.style.display = 'flex';
-        });
-
-        closeModalButton.addEventListener('click', () => {
-            exportModal.style.display = 'none';
-        });
-        
-        window.addEventListener('click', (event) => {
-            if (event.target == exportModal) {
-                exportModal.style.display = 'none';
-            }
-        });
-
-        copyButton.addEventListener('click', () => {
-            promptOutput.select();
-            document.execCommand('copy');
-            copyButton.textContent = 'Copié !';
-            setTimeout(() => { copyButton.textContent = 'Copier le prompt'; }, 2000);
-        });
-
-        renderActivities();
-    </script>
-</body>
-</html>
+            else if (event.target.matches('.btn-minus') && activity.rating > -5) { activi

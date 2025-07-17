@@ -56,11 +56,13 @@
         #prompt-output { width: 100%; height: 300px; margin: 15px 0; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-family: monospace; font-size: 0.9em; background-color: #fff; }
         .modal-actions { text-align: right; }
 
-        /* **NOUVEAUTÉ : Design adaptatif (responsive) pour les smartphones** */
+        /* Design adaptatif (responsive) pour les smartphones */
         @media (max-width: 600px) {
+            body { padding: 10px; }
+            h1 { font-size: 1.5em; }
             .activity-card {
                 display: block; /* Les éléments s'empilent au lieu d'être côte à côte */
-                padding-bottom: 10px;
+                padding: 15px;
             }
             .activity-name {
                 white-space: normal; /* Permet au texte de revenir à la ligne */
@@ -77,7 +79,6 @@
     </style>
 </head>
 <body>
-    <!-- Le reste du HTML (body) est identique et n'a pas besoin d'être changé -->
     <main>
         <h1>🧭 Mon Compas de Vie</h1>
         <p class="intro-text">Notez chaque activité de -5 à +5 pour découvrir ce qui vous anime.</p>
@@ -101,126 +102,37 @@
         </div>
     </div>
 
-    <!-- Le JavaScript est identique et n'a pas besoin d'être changé -->
     <script>
         const STORAGE_KEY = 'lifeCompassActivities';
 
         const initialActivities = [
             // Créativité & Expression
-            { id: 1, name: "Écrire une histoire courte ou un poème", rating: 0 },
-            { id: 2, name: "Dessiner ou faire un croquis rapide", rating: 0 },
-            { id: 3, name: "Peindre avec de l'aquarelle ou de l'acrylique", rating: 0 },
-            { id: 4, name: "Composer un morceau de musique", rating: 0 },
-            { id: 5, name: "Prendre et retoucher des photos", rating: 0 },
-            { id: 6, name: "Créer un design graphique (logo, affiche)", rating: 0 },
-            { id: 7, name: "Monter une courte vidéo", rating: 0 },
-            { id: 8, name: "Faire de la poterie ou de la sculpture", rating: 0 },
-            { id: 9, name: "Cuisiner un plat de manière créative", rating: 0 },
-            { id: 10, name: "Tenir un journal intime ou un blog", rating: 0 },
-            { id: 11, name: "Faire du bricolage ou un projet DIY", rating: 0 },
-            { id: 12, name: "Imaginer et concevoir un objet ou un espace", rating: 0 },
-            { id: 13, name: "Apprendre la calligraphie", rating: 0 },
-            { id: 14, name: "Créer un moodboard pour un projet", rating: 0 },
-            { id: 15, name: "Faire de l'improvisation théâtrale", rating: 0 },
+            { id: 1, name: "Écrire une histoire courte ou un poème", rating: 0 }, { id: 2, name: "Dessiner ou faire un croquis rapide", rating: 0 }, { id: 3, name: "Peindre avec de l'aquarelle ou de l'acrylique", rating: 0 }, { id: 4, name: "Composer un morceau de musique", rating: 0 }, { id: 5, name: "Prendre et retoucher des photos", rating: 0 }, { id: 6, name: "Créer un design graphique (logo, affiche)", rating: 0 }, { id: 7, name: "Monter une courte vidéo", rating: 0 }, { id: 8, name: "Faire de la poterie ou de la sculpture", rating: 0 }, { id: 9, name: "Cuisiner un plat de manière créative", rating: 0 }, { id: 10, name: "Tenir un journal intime ou un blog", rating: 0 }, { id: 11, name: "Faire du bricolage ou un projet DIY", rating: 0 }, { id: 12, name: "Imaginer et concevoir un objet ou un espace", rating: 0 }, { id: 13, name: "Apprendre la calligraphie", rating: 0 }, { id: 14, name: "Créer un moodboard pour un projet", rating: 0 }, { id: 15, name: "Faire de l'improvisation théâtrale", rating: 0 },
             // Connaissance & Croissance
-            { id: 16, name: "Lire un livre de non-fiction sur un nouveau sujet", rating: 0 },
-            { id: 17, name: "Regarder un documentaire approfondi", rating: 0 },
-            { id: 18, name: "Suivre un cours en ligne (Coursera, edX)", rating: 0 },
-            { id: 19, name: "Apprendre les bases d'une nouvelle langue", rating: 0 },
-            { id: 20, name: "Apprendre un langage de programmation", rating: 0 },
-            { id: 21, name: "Écouter un podcast éducatif", rating: 0 },
-            { id: 22, name: "Faire des recherches sur un sujet qui me passionne", rating: 0 },
-            { id: 23, name: "Visiter un musée ou une exposition scientifique", rating: 0 },
-            { id: 24, name: "Analyser des données ou des statistiques", rating: 0 },
-            { id: 25, name: "Lire des articles de recherche", rating: 0 },
-            { id: 26, name: "Apprendre une compétence manuelle (couture, menuiserie)", rating: 0 },
-            { id: 27, name: "Participer à une conférence ou un webinaire", rating: 0 },
-            { id: 28, name: "Maîtriser une nouvelle fonctionnalité d'un logiciel", rating: 0 },
-            { id: 29, name: "Étudier la philosophie ou l'histoire", rating: 0 },
-            { id: 30, name: "Apprendre à jouer aux échecs ou au go", rating: 0 },
+            { id: 16, name: "Lire un livre de non-fiction sur un nouveau sujet", rating: 0 }, { id: 17, name: "Regarder un documentaire approfondi", rating: 0 }, { id: 18, name: "Suivre un cours en ligne (Coursera, edX)", rating: 0 }, { id: 19, name: "Apprendre les bases d'une nouvelle langue", rating: 0 }, { id: 20, name: "Apprendre un langage de programmation", rating: 0 }, { id: 21, name: "Écouter un podcast éducatif", rating: 0 }, { id: 22, name: "Faire des recherches sur un sujet qui me passionne", rating: 0 }, { id: 23, name: "Visiter un musée ou une exposition scientifique", rating: 0 }, { id: 24, name: "Analyser des données ou des statistiques", rating: 0 }, { id: 25, name: "Lire des articles de recherche", rating: 0 }, { id: 26, name: "Apprendre une compétence manuelle (couture, menuiserie)", rating: 0 }, { id: 27, name: "Participer à une conférence ou un webinaire", rating: 0 }, { id: 28, name: "Maîtriser une nouvelle fonctionnalité d'un logiciel", rating: 0 }, { id: 29, name: "Étudier la philosophie ou l'histoire", rating: 0 }, { id: 30, name: "Apprendre à jouer aux échecs ou au go", rating: 0 },
             // Aventure & Liberté
-            { id: 31, name: "Faire une randonnée en montagne", rating: 0 },
-            { id: 32, name: "Explorer un quartier inconnu de ma ville", rating: 0 },
-            { id: 33, name: "Planifier un voyage en détail", rating: 0 },
-            { id: 34, name: "Partir en week-end sur un coup de tête", rating: 0 },
-            { id: 35, name: "Essayer un sport extrême (escalade, surf)", rating: 0 },
-            { id: 36, name: "Faire du camping ou un bivouac", rating: 0 },
-            { id: 37, name: "Goûter à une cuisine étrangère que je ne connais pas", rating: 0 },
-            { id: 38, name: "Faire un road trip sans itinéraire fixe", rating: 0 },
-            { id: 39, name: "Apprendre des techniques de survie en nature", rating: 0 },
-            { id: 40, name: "Visiter un lieu abandonné (urbex)", rating: 0 },
-            { id: 41, name: "Participer à un jeu de piste ou escape game", rating: 0 },
-            { id: 42, name: "Faire du vélo sur une longue distance", rating: 0 },
-            { id: 43, name: "Dormir à la belle étoile", rating: 0 },
-            { id: 44, name: "Tester un nouveau moyen de transport (kayak, paddle)", rating: 0 },
-            { id: 45, name: "Assister à un festival culturel ou musical", rating: 0 },
+            { id: 31, name: "Faire une randonnée en montagne", rating: 0 }, { id: 32, name: "Explorer un quartier inconnu de ma ville", rating: 0 }, { id: 33, name: "Planifier un voyage en détail", rating: 0 }, { id: 34, name: "Partir en week-end sur un coup de tête", rating: 0 }, { id: 35, name: "Essayer un sport extrême (escalade, surf)", rating: 0 }, { id: 36, name: "Faire du camping ou un bivouac", rating: 0 }, { id: 37, name: "Goûter à une cuisine étrangère que je ne connais pas", rating: 0 }, { id: 38, name: "Faire un road trip sans itinéraire fixe", rating: 0 }, { id: 39, name: "Apprendre des techniques de survie en nature", rating: 0 }, { id: 40, name: "Visiter un lieu abandonné (urbex)", rating: 0 }, { id: 41, name: "Participer à un jeu de piste ou escape game", rating: 0 }, { id: 42, name: "Faire du vélo sur une longue distance", rating: 0 }, { id: 43, name: "Dormir à la belle étoile", rating: 0 }, { id: 44, name: "Tester un nouveau moyen de transport (kayak, paddle)", rating: 0 }, { id: 45, name: "Assister à un festival culturel ou musical", rating: 0 },
             // Social & Connexion
-            { id: 46, name: "Organiser un dîner ou un événement pour des amis", rating: 0 },
-            { id: 47, name: "Avoir une conversation profonde avec un proche", rating: 0 },
-            { id: 48, name: "Faire du bénévolat pour une cause qui me tient à cœur", rating: 0 },
-            { id: 49, name: "Participer à un jeu de société complexe", rating: 0 },
-            { id: 50, name: "Animer une réunion ou un atelier", rating: 0 },
-            { id: 51, name: "Rejoindre un club ou une association", rating: 0 },
-            { id: 52, name: "Faire du mentorat ou coacher quelqu'un", rating: 0 },
-            { id: 53, name: "Donner un cours ou une formation", rating: 0 },
-            { id: 54, "name": "Débattre d'un sujet de société de manière constructive", rating: 0 },
-            { id: 55, name: "Contacter un vieil ami pour prendre des nouvelles", rating: 0 },
-            { id: 56, name: "Faire un sport d'équipe", rating: 0 },
-            { id: 57, name: "Participer à un événement de networking", rating: 0 },
-            { id: 58, name: "Écouter attentivement quelqu'un raconter son histoire", rating: 0 },
-            { id: 59, name: "Collaborer sur un projet avec d'autres personnes", rating: 0 },
-            { id: 60, name: "Exprimer ma gratitude à quelqu'un", rating: 0 },
+            { id: 46, name: "Organiser un dîner ou un événement pour des amis", rating: 0 }, { id: 47, name: "Avoir une conversation profonde avec un proche", rating: 0 }, { id: 48, name: "Faire du bénévolat pour une cause qui me tient à cœur", rating: 0 }, { id: 49, name: "Participer à un jeu de société complexe", rating: 0 }, { id: 50, name: "Animer une réunion ou un atelier", rating: 0 }, { id: 51, name: "Rejoindre un club ou une association", rating: 0 }, { id: 52, name: "Faire du mentorat ou coacher quelqu'un", rating: 0 }, { id: 53, name: "Donner un cours ou une formation", rating: 0 }, { id: 54, "name": "Débattre d'un sujet de société de manière constructive", rating: 0 }, { id: 55, name: "Contacter un vieil ami pour prendre des nouvelles", rating: 0 }, { id: 56, name: "Faire un sport d'équipe", rating: 0 }, { id: 57, name: "Participer à un événement de networking", rating: 0 }, { id: 58, name: "Écouter attentivement quelqu'un raconter son histoire", rating: 0 }, { id: 59, name: "Collaborer sur un projet avec d'autres personnes", rating: 0 }, { id: 60, name: "Exprimer ma gratitude à quelqu'un", rating: 0 },
             // Structure & Organisation
-            { id: 61, name: "Organiser et ranger une pièce de la maison", rating: 0 },
-            { id: 62, name: "Planifier ma semaine en détail", rating: 0 },
-            { id: 63, name: "Créer un budget et suivre mes finances", rating: 0 },
-            { id: 64, name: "Optimiser une routine quotidienne", rating: 0 },
-            { id: 65, name: "Construire un système de classement (fichiers, papiers)", rating: 0 },
-            { id: 66, name: "Faire une liste et la suivre méthodiquement", rating: 0 },
-            { id: 67, name: "Gérer un projet avec des outils (Trello, Asana)", rating: 0 },
-            { id: 68, name: "Réparer un objet cassé", rating: 0 },
-            { id: 69, name: "Mettre en place une nouvelle habitude", rating: 0 },
-            { id: 70, name: "Automatiser une tâche répétitive", rating: 0 },
-            { id: 71, name: "Faire le tri dans mes affaires (minimalisme)", rating: 0 },
-            { id: 72, name: "Préparer mes repas pour la semaine (meal prep)", rating: 0 },
-            { id: 73, name: "Créer un arbre généalogique", rating: 0 },
-            { id: 74, name: "Établir des objectifs à long terme (SMART)", rating: 0 },
-            { id: 75, name: "Résoudre un puzzle ou un casse-tête logique", rating: 0 },
+            { id: 61, name: "Organiser et ranger une pièce de la maison", rating: 0 }, { id: 62, name: "Planifier ma semaine en détail", rating: 0 }, { id: 63, name: "Créer un budget et suivre mes finances", rating: 0 }, { id: 64, name: "Optimiser une routine quotidienne", rating: 0 }, { id: 65, name: "Construire un système de classement (fichiers, papiers)", rating: 0 }, { id: 66, name: "Faire une liste et la suivre méthodiquement", rating: 0 }, { id: 67, name: "Gérer un projet avec des outils (Trello, Asana)", rating: 0 }, { id: 68, name: "Réparer un objet cassé", rating: 0 }, { id: 69, name: "Mettre en place une nouvelle habitude", rating: 0 }, { id: 70, name: "Automatiser une tâche répétitive", rating: 0 }, { id: 71, name: "Faire le tri dans mes affaires (minimalisme)", rating: 0 }, { id: 72, name: "Préparer mes repas pour la semaine (meal prep)", rating: 0 }, { id: 73, name: "Créer un arbre généalogique", rating: 0 }, { id: 74, name: "Établir des objectifs à long terme (SMART)", rating: 0 }, { id: 75, name: "Résoudre un puzzle ou un casse-tête logique", rating: 0 },
             // Bien-être & Introspection
-            { id: 76, name: "Méditer pendant 15 minutes", rating: 0 },
-            { id: 77, name: "Pratiquer le yoga ou des étirements", rating: 0 },
-            { id: 78, name: "Passer du temps seul et réfléchir, sans distraction", rating: 0 },
-            { id: 79, name: "Faire une sieste réparatrice", rating: 0 },
-            { id: 80, name: "Écouter un album de musique en entier, attentivement", rating: 0 },
-            { id: 81, name: "Marcher dans la nature en étant pleinement présent", rating: 0 },
-            { id: 82, name: "Faire une séance de sport intense", rating: 0 },
-            { id: 83, name: "Prendre un bain chaud ou une longue douche", rating: 0 },
-            { id: 84, name: "Faire une détox digitale pendant plusieurs heures", rating: 0 },
-            { id: 85, name: "Jardiner ou m'occuper de plantes", rating: 0 },
-            { id: 86, name: "Pratiquer des exercices de respiration", rating: 0 },
-            { id: 87, name: "Écrire mes pensées sans filtre (brain dumping)", rating: 0 },
-            { id: 88, name: "Observer les gens dans un café", rating: 0 },
-            { id: 89, name: "Identifier et nommer mes émotions du moment", rating: 0 },
-            { id: 90, name: "Passer du temps avec un animal de compagnie", rating: 0 },
+            { id: 76, name: "Méditer pendant 15 minutes", rating: 0 }, { id: 77, name: "Pratiquer le yoga ou des étirements", rating: 0 }, { id: 78, name: "Passer du temps seul et réfléchir, sans distraction", rating: 0 }, { id: 79, name: "Faire une sieste réparatrice", rating: 0 }, { id: 80, name: "Écouter un album de musique en entier, attentivement", rating: 0 }, { id: 81, name: "Marcher dans la nature en étant pleinement présent", rating: 0 }, { id: 82, name: "Faire une séance de sport intense", rating: 0 }, { id: 83, name: "Prendre un bain chaud ou une longue douche", rating: 0 }, { id: 84, name: "Faire une détox digitale pendant plusieurs heures", rating: 0 }, { id: 85, name: "Jardiner ou m'occuper de plantes", rating: 0 }, { id: 86, name: "Pratiquer des exercices de respiration", rating: 0 }, { id: 87, name: "Écrire mes pensées sans filtre (brain dumping)", rating: 0 }, { id: 88, name: "Observer les gens dans un café", rating: 0 }, { id: 89, name: "Identifier et nommer mes émotions du moment", rating: 0 }, { id: 90, name: "Passer du temps avec un animal de compagnie", rating: 0 },
             // Divers
-            { id: 91, name: "Négocier un prix ou un contrat", rating: 0 },
-            { id: 92, name: "Vendre un objet dont je ne me sers plus", rating: 0 },
-            { id: 93, name: "Construire un meuble en kit", rating: 0 },
-            { id: 94, name: "Faire une blague et faire rire les autres", rating: 0 },
-            { id: 95, name: "Parler en public devant une petite audience", rating: 0 },
-            { id: 96, name: "Choisir une tenue qui exprime ma personnalité", rating: 0 },
-            { id: 97, name: "Faire une bonne action de manière anonyme", rating: 0 },
-            { id: 98, name: "Défendre une opinion face à une contradiction", rating: 0 },
-            { id: 99, name: "Goûter un vin ou un café en analysant les arômes", rating: 0 },
-            { id: 100, name: "Se lever tôt pour voir le lever du soleil", rating: 0 },
+            { id: 91, name: "Négocier un prix ou un contrat", rating: 0 }, { id: 92, name: "Vendre un objet dont je ne me sers plus", rating: 0 }, { id: 93, name: "Construire un meuble en kit", rating: 0 }, { id: 94, name: "Faire une blague et faire rire les autres", rating: 0 }, { id: 95, name: "Parler en public devant une petite audience", rating: 0 }, { id: 96, name: "Choisir une tenue qui exprime ma personnalité", rating: 0 }, { id: 97, name: "Faire une bonne action de manière anonyme", rating: 0 }, { id: 98, name: "Défendre une opinion face à une contradiction", rating: 0 }, { id: 99, name: "Goûter un vin ou un café en analysant les arômes", rating: 0 }, { id: 100, name: "Se lever tôt pour voir le lever du soleil", rating: 0 },
         ];
+        
+        // **CORRECTION** : La variable n'est déclarée qu'une seule fois.
         let activities = JSON.parse(localStorage.getItem(STORAGE_KEY)) || initialActivities;
+        
         const exportModal = document.getElementById('export-modal');
         const exportButton = document.getElementById('export-button');
         const closeModalButton = document.getElementById('close-modal-button');
         const copyButton = document.getElementById('copy-button');
         const promptOutput = document.getElementById('prompt-output');
+
         function saveActivities() { localStorage.setItem(STORAGE_KEY, JSON.stringify(activities)); }
+        
         function renderActivities() {
             const listContainer = document.getElementById('activities-list');
             listContainer.innerHTML = '';
@@ -233,6 +145,7 @@
                 updateCard(card, activity);
             });
         }
+        
         function updateCard(cardElement, activity) {
             const ratingValue = cardElement.querySelector('.rating-value');
             ratingValue.textContent = activity.rating > 0 ? `+${activity.rating}` : activity.rating;
@@ -246,6 +159,7 @@
                 ratingValue.classList.add('negative');
             }
         }
+
         function generateAIPrompt() {
             const positive = activities.filter(a => a.rating > 0).sort((a,b) => b.rating - a.rating);
             const negative = activities.filter(a => a.rating < 0).sort((a,b) => a.rating - b.rating);
@@ -264,11 +178,56 @@
             prompt += `4. **Question d'Approfondissement :** Termine en me posant une question puissante et inattendue pour m'aider à pousser ma réflexion encore plus loin.`;
             return prompt;
         }
+        
+        // **CORRECTION** : Le code a été restauré et complété ici.
         document.getElementById('activities-list').addEventListener('click', (event) => {
             const card = event.target.closest('.activity-card');
             if (!card) return;
             const activityId = parseInt(card.dataset.id);
             const activity = activities.find(a => a.id === activityId);
             let hasChanged = false;
-            if (event.target.matches('.btn-plus') && activity.rating < 5) { activity.rating++; hasChanged = true; }
-            else if (event.target.matches('.btn-minus') && activity.rating > -5) { activi
+
+            if (event.target.matches('.btn-plus') && activity.rating < 5) {
+                activity.rating++; hasChanged = true;
+            } else if (event.target.matches('.btn-minus') && activity.rating > -5) {
+                activity.rating--; hasChanged = true;
+            }
+            
+            if(hasChanged) {
+                saveActivities();
+                updateCard(card, activity);
+            }
+        });
+
+        document.getElementById('sort-button').addEventListener('click', () => {
+            activities.sort((a, b) => b.rating - a.rating);
+            renderActivities();
+        });
+
+        exportButton.addEventListener('click', () => {
+            promptOutput.value = generateAIPrompt();
+            exportModal.style.display = 'flex';
+        });
+
+        closeModalButton.addEventListener('click', () => {
+            exportModal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', (event) => {
+            if (event.target == exportModal) {
+                exportModal.style.display = 'none';
+            }
+        });
+
+        copyButton.addEventListener('click', () => {
+            promptOutput.select();
+            document.execCommand('copy');
+            copyButton.textContent = 'Copié !';
+            setTimeout(() => { copyButton.textContent = 'Copier le prompt'; }, 2000);
+        });
+
+        // Affichage initial
+        renderActivities();
+    </script>
+</body>
+</html>
